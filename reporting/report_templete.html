@@ -1,0 +1,71 @@
+<!doctype html><html><head>
+<meta charset="utf-8"><title>Security Scan Report</title>
+<style>
+body{font-family:Arial, sans-serif; margin:20px;}
+.grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+.card{border:1px solid #ddd; border-radius:8px; padding:12px}
+.table{width:100%; border-collapse:collapse}
+.table th,.table td{border:1px solid #eee; padding:6px; text-align:left; vertical-align:top}
+.badge{padding:2px 6px; border-radius:4px; color:#fff}
+.badge.critical{background:#b30000}.badge.high{background:#d9534f}
+.badge.medium{background:#f0ad4e;color:#222}.badge.low{background:#5bc0de}
+.badge.info{background:#777}
+.small{font-size:12px;color:#444}
+</style></head><body>
+<h1>Security Scan Report</h1>
+<p class="small">Generated: {{ generated_at }}</p>
+
+<div class="grid">
+  <div class="card">
+    <h3>Summary</h3>
+    <div>Hosts: {{ summary.hosts }}</div>
+    <div>Total open ports: {{ summary.total_ports }}</div>
+  </div>
+  <div class="card">
+    <h3>Severity Distribution</h3>
+    {{ charts.pie | safe }}
+  </div>
+  <div class="card">
+    <h3>Top Ports</h3>
+    {{ charts.bar | safe }}
+  </div>
+  <div class="card">
+    <h3>Top CVEs</h3>
+    {{ charts.cve | safe }}
+  </div>
+</div>
+
+<h3>Hosts Detail</h3>
+<table class="table">
+  <thead><tr>
+    <th>IP</th><th>Risk</th><th>#Ports</th><th>Ports & CVEs</th>
+  </tr></thead>
+  <tbody>
+  {% for h in data %}
+    <tr>
+      <td>{{ h.ip }}</td>
+      <td><span class="badge {{ h.risk_label }}">{{ h.risk_label }} ({{ h.risk_score }})</span></td>
+      <td>{{ h.open_ports|length }}</td>
+      <td>
+        <ul>
+        {% for p in h.open_ports %}
+          <li><strong>{{ p.port }}</strong> {{ p.service }}
+            {% if p.cves and p.cves|length > 0 %}
+              <div class="small">
+                {% for c in p.cves[:5] %}
+                  • {{ c.id }} (CVSS {{ c.cvss }}, EPSS {{ c.epss }})<br>
+                {% endfor %}
+                {% if p.cves|length > 5 %}... ({{ p.cves|length - 5 }} more){% endif %}
+              </div>
+            {% else %}
+              <div class="small">No mapped CVEs</div>
+            {% endif %}
+          </li>
+        {% endfor %}
+        </ul>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</body></html>
