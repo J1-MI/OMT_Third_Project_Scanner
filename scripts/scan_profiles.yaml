@@ -1,0 +1,25 @@
+profiles:
+  safe_operational:
+    description: "운영망 안전 모드 (기본)"
+    nmap_flags: ["-sS","-sV","--open"]
+    timing_template: "-T2"
+    min_rate: 10
+    max_rate: 200
+    max_retries: 2
+    safe_mode: true
+    port_range: "1-1024"
+    do_vuln_scan: false
+    allowed_time_window:
+      start: "00:00"
+      end: "23:59"
+
+  recon_aggressive:
+    description: "리콘/테스트 전용"
+    nmap_flags: ["-sS","-sV","-O","--script=vuln"]
+    timing_template: "-T4"
+    min_rate: 500
+    max_rate: 5000
+    max_retries: 5
+    safe_mode: false
+    port_range: "1-65535"
+    do_vuln_scan: true

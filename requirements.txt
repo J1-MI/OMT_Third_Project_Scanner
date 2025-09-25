@@ -1,0 +1,6 @@
+dnspython
+pyyaml
+apscheduler
+python-redis    # optional, only if you use redis queue
+requests
+lxml

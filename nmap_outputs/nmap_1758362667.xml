@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///E:/BMS/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.98 scan initiated Sun Sep 21 04:04:28 2025 as: E:\\BMS\\nmap.exe -T2 -sS -sV -&#45;open -p 1-1024 -&#45;min-rate 10 -&#45;max-rate 200 -oX E:\\asset-pipeline\\nmap_outputs\\nmap_1758362667.xml scanme.nmap.org -->
+<nmaprun scanner="nmap" args="E:\\BMS\\nmap.exe -T2 -sS -sV -&#45;open -p 1-1024 -&#45;min-rate 10 -&#45;max-rate 200 -oX E:\\asset-pipeline\\nmap_outputs\\nmap_1758362667.xml scanme.nmap.org" start="1758395068" startstr="Sun Sep 21 04:04:28 2025" version="7.98" xmloutputversion="1.05">
+<scaninfo type="syn" protocol="tcp" numservices="1024" services="1-1024"/>
+<verbose level="0"/>
+<debugging level="0"/>
+<hosthint><status state="up" reason="unknown-response" reason_ttl="0"/>
+<address addr="45.33.32.156" addrtype="ipv4"/>
+<hostnames>
+<hostname name="scanme.nmap.org" type="user"/>
+</hostnames>
+</hosthint>
+<host starttime="1758395070" endtime="1758395182"><status state="up" reason="echo-reply" reason_ttl="46"/>
+<address addr="45.33.32.156" addrtype="ipv4"/>
+<hostnames>
+<hostname name="scanme.nmap.org" type="user"/>
+<hostname name="scanme.nmap.org" type="PTR"/>
+</hostnames>
+<ports><extraports state="closed" count="1014">
+<extrareasons reason="reset" count="1014" proto="tcp" ports="1-21,23-79,81-134,136,140-178,180-444,446-592,594-706,708-1024"/>
+</extraports>
+<extraports state="filtered" count="8">
+<extrareasons reason="no-response" count="8" proto="tcp" ports="135,137-139,179,445,593,707"/>
+</extraports>
+<port protocol="tcp" portid="22"><state state="open" reason="syn-ack" reason_ttl="46"/><service name="ssh" product="OpenSSH" version="6.6.1p1 Ubuntu 2ubuntu2.13" extrainfo="Ubuntu Linux; protocol 2.0" ostype="Linux" method="probed" conf="10"><cpe>cpe:/a:openbsd:openssh:6.6.1p1</cpe><cpe>cpe:/o:linux:linux_kernel</cpe></service></port>
+<port protocol="tcp" portid="80"><state state="open" reason="syn-ack" reason_ttl="46"/><service name="http" product="Apache httpd" version="2.4.7" extrainfo="(Ubuntu)" method="probed" conf="10"><cpe>cpe:/a:apache:http_server:2.4.7</cpe></service></port>
+</ports>
+<times srtt="130518" rttvar="7146" to="400000"/>
+</host>
+<runstats><finished time="1758395182" timestr="Sun Sep 21 04:06:22 2025" summary="Nmap done at Sun Sep 21 04:06:22 2025; 1 IP address (1 host up) scanned in 114.19 seconds" elapsed="114.19" exit="success"/><hosts up="1" down="0" total="1"/>
+</runstats>
+</nmaprun>
