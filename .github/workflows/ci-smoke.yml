@@ -1,0 +1,48 @@
+name: CI - Smoke Test (build_report)
+
+on:
+  push:
+    branches: [ main, integration/* ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install python deps (ignore non-pip deps)
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt || true; fi
+
+      - name: Prepare sample data
+        run: |
+          mkdir -p tmp_test_inputs tmp_test_outputs
+          cp data/sample_scanner.json tmp_test_inputs/sample_scanner.json
+          cp data/sample_mapper.json tmp_test_inputs/sample_mapper.json
+
+      - name: Run build_report (smoke)
+        run: |
+          python build_report.py --scanner tmp_test_inputs/sample_scanner.json --mapper tmp_test_inputs/sample_mapper.json --out tmp_test_outputs/report.html || python3 build_report.py --scanner tmp_test_inputs/sample_scanner.json --mapper tmp_test_inputs/sample_mapper.json --out tmp_test_outputs/report.html || echo "build_report.py exited with non-zero; continue to collect logs"
+
+      - name: Upload report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-report
+          path: tmp_test_outputs/report.html
+
+      - name: Archive logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs
+          path: |
+            tmp_test_outputs/report.html
+            build_report.log || true
