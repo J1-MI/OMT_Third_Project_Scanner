@@ -1,0 +1,13 @@
+{
+    "vulns": [
+      {
+        "target": "192.0.2.1",
+        "port": 80,
+        "service": "http",
+        "cves": ["CVE-2020-0001"],
+        "score": 7.5,
+        "description": "Example vuln for CI smoke test"
+      }
+    ]
+  }
+  

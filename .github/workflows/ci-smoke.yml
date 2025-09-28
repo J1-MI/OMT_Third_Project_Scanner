@@ -1,0 +1,60 @@
+name: CI - Smoke Test (build_report)
+
+on:
+  push:
+    branches: [ main, dev, integration/* ]
+  pull_request:
+    branches: [ main, dev ]
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install minimal deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-ci.txt
+
+      - name: JSON schema validate
+        run: python scripts/validate_json.py
+
+      - name: PyTest (unit)
+        run: pytest -q
+
+      - name: Pick report template
+        id: picktpl
+        run: |
+          if [ -f reporting/report_template.html ]; then
+            echo "TEMPLATE=reporting/report_template.html" >> $GITHUB_OUTPUT
+          elif [ -f reporting/report_templete.html ]; then
+            echo "TEMPLATE=reporting/report_templete.html" >> $GITHUB_OUTPUT
+          else
+            echo "No template found under reporting/"
+            exit 1
+          fi
+
+      - name: Build HTML report (no PNG)
+        run: |
+          mkdir -p tmp_test_outputs
+          python build_report.py \
+            --scanner data/sample_scanner.json \
+            --mapper  data/sample_mapper.json \
+            --out     tmp_test_outputs/report.html \
+            --template "${{ steps.picktpl.outputs.TEMPLATE }}" \
+            --no-png
+
+      - name: Upload report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-report
+          path: tmp_test_outputs/report.html

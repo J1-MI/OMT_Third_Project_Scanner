@@ -1,0 +1,16 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "scanner_results",
+    "type": "array",
+    "items": {
+      "type": "object",
+      "required": ["target", "port", "state"],
+      "properties": {
+        "target": {"type": "string"},
+        "port":   {"type": "integer"},
+        "state":  {"type": "string", "enum": ["open","closed","filtered"]},
+        "banner": {"type": "string"}
+      },
+      "additionalProperties": true
+    }
+}

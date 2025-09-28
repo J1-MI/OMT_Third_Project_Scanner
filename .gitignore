@@ -1,0 +1,7 @@
+out/
+tmp_test_outputs/
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db

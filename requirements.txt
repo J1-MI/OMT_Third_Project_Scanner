@@ -4,3 +4,7 @@ apscheduler
 python-redis    # optional, only if you use redis queue
 requests
 lxml
+plotly
+jinja2
+selenium
+pdfkit

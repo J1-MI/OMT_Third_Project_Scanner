@@ -1,0 +1,13 @@
+{
+    "192.0.2.1:80": {
+      "vulnerabilities": [
+        {
+          "cve_id": "CVE-2020-0001",
+          "cvss_score": 7.5,
+          "epss_percentile": 0.42,
+          "risk_score": 7.5,
+          "description": "Example vuln for demo"
+        }
+      ]
+    }
+}
