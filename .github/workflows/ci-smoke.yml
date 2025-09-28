@@ -13,50 +13,39 @@ jobs:
       contents: read
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: "pip"
 
-      - name: Install Python deps (fallback to minimal)
-        shell: bash
+      - name: Install minimal deps
         run: |
-          set -e
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt || true
-          fi
-          # 최소 의존성 확보 (requirements 누락/설치 일부 실패 대비)
-          pip install --upgrade plotly jinja2
+          pip install -r requirements-ci.txt
 
-      - name: Pick report template (template vs templete)
+      - name: JSON schema validate
+        run: python scripts/validate_json.py
+
+      - name: PyTest (unit)
+        run: pytest -q
+
+      - name: Pick report template
         id: picktpl
-        shell: bash
         run: |
-          set -e
           if [ -f reporting/report_template.html ]; then
             echo "TEMPLATE=reporting/report_template.html" >> $GITHUB_OUTPUT
           elif [ -f reporting/report_templete.html ]; then
             echo "TEMPLATE=reporting/report_templete.html" >> $GITHUB_OUTPUT
           else
-            echo "No template found under reporting/"; ls -la reporting || true
+            echo "No template found under reporting/"
             exit 1
           fi
 
-      - name: Ensure output dir
-        run: mkdir -p tmp_test_outputs
-
-      - name: Run build_report (HTML only)
-        shell: bash
+      - name: Build HTML report (no PNG)
         run: |
-          set -e
-          # 샘플 파일이 레포에 포함되어 있어야 합니다.
-          test -f data/sample_scanner.json
-          test -f data/sample_mapper.json
+          mkdir -p tmp_test_outputs
           python build_report.py \
             --scanner data/sample_scanner.json \
             --mapper  data/sample_mapper.json \
@@ -65,7 +54,6 @@ jobs:
             --no-png
 
       - name: Upload report artifact
-        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: smoke-report
