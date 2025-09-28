@@ -1,2 +1,3 @@
 plotly
 jinja2
+jsonschema
