@@ -100,3 +100,9 @@ DB_FILE = data/cache.db
 TTL = 86400
 
 - Selenium 사용시 브라우저 드라이버(ChromeDriver) 버전과 설치 경로 확인 필요.
+
+# 8. 보안 권장 사항
+- 모든 증적(PCAP, 스냅샷 메타, 로그)등은 읽기 전용으로 보관(권한 제한)
+- 증적 해시(SHA256 등)을 생성해 무결성 보장
+- 증적 보관 기간과 접근 권한을 ATT에 명시(ex. 90일 보관, 보안팀만 접근 가능)
+- ex) sha256sum capture.pcap > capture.pcap.sha256"
