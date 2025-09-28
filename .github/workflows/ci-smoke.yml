@@ -2,47 +2,71 @@ name: CI - Smoke Test (build_report)
 
 on:
   push:
-    branches: [ main, integration/* ]
+    branches: [ main, dev, integration/* ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, dev ]
 
 jobs:
   smoke:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          cache: "pip"
 
-      - name: Install python deps (ignore non-pip deps)
+      - name: Install Python deps (fallback to minimal)
+        shell: bash
         run: |
+          set -e
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt || true; fi
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt || true
+          fi
+          # 최소 의존성 확보 (requirements 누락/설치 일부 실패 대비)
+          pip install --upgrade plotly jinja2
 
-      - name: Prepare sample data
+      - name: Pick report template (template vs templete)
+        id: picktpl
+        shell: bash
         run: |
-          mkdir -p tmp_test_inputs tmp_test_outputs
-          cp data/sample_scanner.json tmp_test_inputs/sample_scanner.json
-          cp data/sample_mapper.json tmp_test_inputs/sample_mapper.json
+          set -e
+          if [ -f reporting/report_template.html ]; then
+            echo "TEMPLATE=reporting/report_template.html" >> $GITHUB_OUTPUT
+          elif [ -f reporting/report_templete.html ]; then
+            echo "TEMPLATE=reporting/report_templete.html" >> $GITHUB_OUTPUT
+          else
+            echo "No template found under reporting/"; ls -la reporting || true
+            exit 1
+          fi
 
-      - name: Run build_report (smoke)
+      - name: Ensure output dir
+        run: mkdir -p tmp_test_outputs
+
+      - name: Run build_report (HTML only)
+        shell: bash
         run: |
-          python build_report.py --scanner tmp_test_inputs/sample_scanner.json --mapper tmp_test_inputs/sample_mapper.json --out tmp_test_outputs/report.html || python3 build_report.py --scanner tmp_test_inputs/sample_scanner.json --mapper tmp_test_inputs/sample_mapper.json --out tmp_test_outputs/report.html || echo "build_report.py exited with non-zero; continue to collect logs"
+          set -e
+          # 샘플 파일이 레포에 포함되어 있어야 합니다.
+          test -f data/sample_scanner.json
+          test -f data/sample_mapper.json
+          python build_report.py \
+            --scanner data/sample_scanner.json \
+            --mapper  data/sample_mapper.json \
+            --out     tmp_test_outputs/report.html \
+            --template "${{ steps.picktpl.outputs.TEMPLATE }}" \
+            --no-png
 
       - name: Upload report artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: smoke-report
           path: tmp_test_outputs/report.html
-
-      - name: Archive logs
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-logs
-          path: |
-            tmp_test_outputs/report.html
-            build_report.log || true
