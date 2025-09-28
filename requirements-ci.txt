@@ -1,3 +1,4 @@
 plotly
 jinja2
 jsonschema
+pytest
