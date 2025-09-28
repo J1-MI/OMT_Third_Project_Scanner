@@ -1,0 +1,29 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "mapper_results",
+    "type": "object",
+    "patternProperties": {
+      "^[0-9\\.]+:[0-9]+$": {
+        "type": "object",
+        "properties": {
+          "vulnerabilities": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["cve_id"],
+              "properties": {
+                "cve_id": {"type": "string"},
+                "cvss_score": {"type": "number"},
+                "epss_percentile": {"type": "number"},
+                "risk_score": {"type": "number"},
+                "description": {"type": "string"}
+              },
+              "additionalProperties": true
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "additionalProperties": false
+}
