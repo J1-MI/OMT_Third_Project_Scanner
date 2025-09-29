@@ -1,4 +1,1 @@
-[
-    {"target": "192.0.2.1", "port": 22, "state": "open", "banner": "OpenSSH 7.9"},
-    {"target": "192.0.2.1", "port": 80, "state": "open", "banner": "nginx/1.18"}
-]
+[]

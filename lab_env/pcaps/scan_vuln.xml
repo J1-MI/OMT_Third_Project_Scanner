@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///usr/share/nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.95 scan initiated Mon Sep 29 02:59:47 2025 as: /usr/lib/nmap/nmap -sS -sV -Pn -p 8080 -oX /tmp/scan_vuln.xml cve-2024-53677 -->
+<nmaprun scanner="nmap" args="/usr/lib/nmap/nmap -sS -sV -Pn -p 8080 -oX /tmp/scan_vuln.xml cve-2024-53677" start="1759114787" startstr="Mon Sep 29 02:59:47 2025" version="7.95" xmloutputversion="1.05">
+<scaninfo type="syn" protocol="tcp" numservices="1" services="8080"/>
+<verbose level="0"/>
+<debugging level="0"/>
+<runstats><finished time="1759114791" timestr="Mon Sep 29 02:59:51 2025" summary="Nmap done at Mon Sep 29 02:59:51 2025; 0 IP addresses (0 hosts up) scanned in 4.09 seconds" elapsed="4.09" exit="success"/><hosts up="0" down="0" total="0"/>
+</runstats>
+</nmaprun>

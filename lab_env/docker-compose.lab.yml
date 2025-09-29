@@ -1,0 +1,41 @@
+# docker-compose.lab.yml (버전 필드 제거)
+networks:
+  labnet:
+    driver: bridge
+    internal: true
+
+services:
+  juice:
+    image: bkimminich/juice-shop:latest
+    container_name: juice-shop
+    restart: unless-stopped
+    networks:
+      - labnet
+
+  dvwa:
+    image: vulnerables/web-dvwa:latest
+    container_name: dvwa
+    restart: unless-stopped
+    environment:
+      - MYSQL_PASSWORD=pass
+    networks:
+      - labnet
+
+  attacker:
+    image: kalilinux/kali-rolling:latest
+    container_name: attacker
+    tty: true
+    stdin_open: true
+    networks:
+      - labnet
+    command: /bin/bash
+
+  monitor:
+    image: nicolaka/netshoot:latest
+    container_name: monitor
+    networks:
+      - labnet
+    volumes:
+      - ./pcaps:/pcaps
+    command: /bin/sh -c "sleep infinity"
+    restart: unless-stopped
